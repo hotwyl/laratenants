@@ -10,4 +10,10 @@ class Event extends Model
     use Tenantable;
 
     protected $guarded = ['id'];
+    protected $table = 'ajustes_categoria';
+
+    protected $fillable = [
+        'name',
+        'schedule',
+    ];
 }

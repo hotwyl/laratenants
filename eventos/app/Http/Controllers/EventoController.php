@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EventoCollection;
+use App\Http\Resources\EventoResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
 use PhpParser\Node\Expr\Cast\Object_;
 
-class ProductController extends Controller
+class EventoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +22,8 @@ class ProductController extends Controller
         try {
             $produtos = Product::all();
 
-            return response()->json($produtos,200);
+            return new EventoCollection($produtos);
+            //return response()->json($produtos,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 401);
         }
@@ -42,7 +45,7 @@ class ProductController extends Controller
                 'status' => 'nullable',
             ]);
 
-            $validado = $request->all();
+
 
             $dados = [];
             $dados['cod'] = (string) Str::uuid();
@@ -66,7 +69,8 @@ class ProductController extends Controller
 
             $produto = Product::create($dados);
 
-            return response()->json($produto,200);
+            return new EventoResource($produto);
+            //return response()->json($produto,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 401);
         }
@@ -88,8 +92,8 @@ class ProductController extends Controller
                 return response()->json(['erro' => 'Nada Consta.'], 404);
             }
 
-            return response()->json($produto,200);
-
+            return new EventoResource($produto);
+            // return response()->json($produto,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 400);
         }
@@ -146,8 +150,8 @@ class ProductController extends Controller
 
             $produto->update($dados);
 
-            return response()->json($produto,200);
-
+            return new EventoResource($produto);
+            // return response()->json($produto,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 400);
         }
@@ -170,8 +174,8 @@ class ProductController extends Controller
 
             $produto->delete();
 
-            return response()->json($produto,200);
-
+            return new EventoResource($produto);
+            //return response()->json($produto,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 400);
         }
@@ -187,10 +191,10 @@ class ProductController extends Controller
 
             $termo = $request->only('termo');
 
-            $produto = Product::where('nome', 'like', '%'.$termo['termo'].'%')->get();
+            $produto = Product::where('nome', 'like', '%'.$termo['termo'].'%')->paginate();
 
-            return response()->json($produto,200);
-
+            return new EventoResource($produto);
+            //return response()->json($produto,200);
         } catch (\Exception $ex) {
             return response()->json($ex->getMessage(), 400);
         }

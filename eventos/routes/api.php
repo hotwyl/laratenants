@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\EventoController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +15,20 @@ use App\Http\Controllers\ProductController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/products', [ProductController::class, 'index']);
-Route::post('/products', [ProductController::class, 'store']);
-Route::post('/products/search', [ProductController::class, 'search']);
-Route::get('/products/{cod}', [ProductController::class, 'show']);
-Route::put('/products/{cod}', [ProductController::class, 'update']);
-Route::delete('/products/{cod}', [ProductController::class, 'destroy']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::group(['middleware'=>['auth:sanctum']], function (){
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/event', [EventoController::class, 'index'])->name('event.index');
+    Route::post('/event', [EventoController::class, 'store'])->name('event.store');
+    Route::post('/event/search', [EventoController::class, 'search'])->name('event.search');
+    Route::get('/event/{cod}', [EventoController::class, 'show'])->name('event.show');
+    Route::put('/event/{cod}', [EventoController::class, 'update'])->name('event.update');
+    Route::delete('/event/{cod}', [EventoController::class, 'destroy'])->name('event.destroy');
 });
+
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});

@@ -15,7 +15,7 @@ class Event extends Model
     protected $fillable = [
         'cod',
         'tenant_id',
-        'name',
+        'nome',
         'slug',
         'descricao',
         'schedule',

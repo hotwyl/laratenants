@@ -18,11 +18,11 @@ class CreateEventsTable extends Migration
             $table->string('cod')->index();
             $table->unsignedBigInteger('tenant_id')->nullable()->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
-            $table->string('name');
+            $table->string('nome')->unique();
             $table->string('slug');
             $table->string('descricao')->nullable();
             $table->dateTime('schedule');
-            $table->integer('status')->default(0);
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

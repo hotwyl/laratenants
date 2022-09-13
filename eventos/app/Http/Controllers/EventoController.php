@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\EventoCollection;
-use App\Http\Resources\EventoResource;
-use App\Models\Product;
+use App\Http\Requests\EventsRequest;
+use App\Service\EventoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use mysql_xdevapi\Exception;
-use PhpParser\Node\Expr\Cast\Object_;
+
 
 class EventoController extends Controller
 {
+    protected $eventoService;
+
+    public function __construct(EventoService $eventoService)
+    {
+        $this->eventoService = $eventoService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,14 +23,7 @@ class EventoController extends Controller
      */
     public function index()
     {
-        try {
-            $produtos = Product::all();
-
-            return new EventoCollection($produtos);
-            //return response()->json($produtos,200);
-        } catch (\Exception $ex) {
-            return response()->json($ex->getMessage(), 401);
-        }
+        return $this->eventoService->index();
     }
 
     /**
@@ -35,45 +32,9 @@ class EventoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EventsRequest $request)
     {
-        try {
-            $request->validate([
-                'nome' => 'required',
-                'descricao' => 'nullable',
-                'preco' => 'required',
-                'status' => 'nullable',
-            ]);
-
-
-
-            $dados = [];
-            $dados['cod'] = (string) Str::uuid();
-
-            if(isset($validado['nome'])){
-                $dados['nome'] = $validado['nome'];
-                $dados['slug'] = Str::slug($validado['nome'], '_');
-            }
-
-            if(isset($validado['descricao'])){
-                $dados['descricao'] = $validado['descricao'];
-            }
-
-            if(isset($validado['preco'])){
-                $dados['preco'] = floatval($validado['preco']);
-            }
-
-            if(isset($validado['status'])){
-                $dados['status'] = intval($validado['status']);
-            }
-
-            $produto = Product::create($dados);
-
-            return new EventoResource($produto);
-            //return response()->json($produto,200);
-        } catch (\Exception $ex) {
-            return response()->json($ex->getMessage(), 401);
-        }
+        return $this->eventoService->store($request->all());
     }
 
     /**

@@ -54,13 +54,13 @@ class AuthService
     public function login($request){
         try {
 
-            if(!Auth::attempt([$request['email'], $request['password']])){
+            if(!Auth::attempt($request)){
                 return response()->json([
                     'status' => false,
                     'message' => 'Email & Password does not match with our record.',
                 ], 401);
             }
-dd('teste');
+
             $user = User::where('email', $request['email'])->first();
 
             return response()->json([

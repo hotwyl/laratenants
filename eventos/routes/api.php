@@ -20,13 +20,18 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::group(['middleware'=>['auth:sanctum']], function (){
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/event', [EventoController::class, 'index'])->name('event.index');
-    Route::post('/event', [EventoController::class, 'store'])->name('event.store');
-    Route::post('/event/search', [EventoController::class, 'search'])->name('event.search');
-    Route::get('/event/{cod}', [EventoController::class, 'show'])->name('event.show');
-    Route::put('/event/{cod}', [EventoController::class, 'update'])->name('event.update');
-    Route::delete('/event/{cod}', [EventoController::class, 'destroy'])->name('event.destroy');
+
+    Route::prefix('evento')->group(function() {
+        Route::get('/', [EventoController::class, 'index'])->name('evento.index');
+        Route::post('/', [EventoController::class, 'store'])->name('evento.store');
+        Route::post('/search', [EventoController::class, 'search'])->name('evento.search');
+        Route::get('/{cod}', [EventoController::class, 'show'])->name('evento.show');
+        Route::put('/{cod}', [EventoController::class, 'update'])->name('evento.update');
+        Route::delete('/{cod}', [EventoController::class, 'destroy'])->name('evento.destroy');
+    });
+
 });
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
